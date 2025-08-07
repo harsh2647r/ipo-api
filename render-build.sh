@@ -1,3 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
+# Exit on error
+set -e
+
+# Install python dependencies
+pip install --upgrade pip
 pip install -r requirements.txt
-playwright install --with-deps
+
+# Install Playwright browsers
+python -m playwright install --with-deps
