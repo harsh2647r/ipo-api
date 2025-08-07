@@ -1,6 +1,9 @@
 import asyncio
+import os
+from flask import Flask, jsonify
 from playwright.async_api import async_playwright
-import json
+
+app = Flask(__name__)
 
 URL = "https://www.chittorgarh.com/report/ipo-subscription-status-live-bidding-data-bse-nse/21/?year=2025"
 
@@ -11,20 +14,12 @@ async def fetch_ipo_data():
         page = await context.new_page()
         try:
             await page.goto(URL, wait_until="load", timeout=15000)
-        except Exception as e:
-            print(f"Failed to load page: {e}")
-            await browser.close()
-            return []
-
-        # Wait for the table rows to load
-        try:
             await page.wait_for_selector("#report_table tbody tr", timeout=15000)
         except Exception as e:
-            print(f"Table rows not found or took too long to load: {e}")
+            print(f"Error loading page: {e}")
             await browser.close()
             return []
 
-        # Extract all columns from each row
         data = await page.evaluate("""() => {
             const rows = document.querySelectorAll("#report_table tbody tr");
             return Array.from(rows).map(row => {
@@ -47,12 +42,10 @@ async def fetch_ipo_data():
         await browser.close()
         return data
 
-def main():
-    ipo_data = asyncio.run(fetch_ipo_data())
-    if ipo_data:
-        print(json.dumps(ipo_data, indent=2))
-    else:
-        print("No data fetched.")
+@app.route("/api/ipo")
+def ipo_api():
+    data = asyncio.run(fetch_ipo_data())
+    return jsonify(data)
 
 if __name__ == "__main__":
-    main()
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
