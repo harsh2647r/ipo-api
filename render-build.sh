@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# This script runs during Render's build process
+
+# Activate the virtual environment (created by Render)
+source .venv/bin/activate
 
 # Install Playwright browsers
 echo "Installing Playwright browsers..."
-playwright install --with-deps
-
-# Proceed with rest of setup (if any)
+python -m playwright install --with-deps
