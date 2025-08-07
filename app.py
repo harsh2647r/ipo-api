@@ -7,6 +7,16 @@ app = Flask(__name__)
 
 URL = "https://www.chittorgarh.com/report/ipo-subscription-status-live-bidding-data-bse-nse/21/?year=2025"
 
+async def ensure_browsers_installed():
+    """
+    Ensures Playwright browsers are installed.
+    This should be run once before using Playwright.
+    """
+    from playwright.__main__ import main
+    import sys
+    sys.argv = ["install"]
+    await main()
+
 async def fetch_ipo_data():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
@@ -54,5 +64,6 @@ def ipo_api():
     return jsonify(data)
 
 if __name__ == "__main__":
+    # Install browsers once before starting the app to avoid runtime errors
+    asyncio.run(ensure_browsers_installed())
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-
