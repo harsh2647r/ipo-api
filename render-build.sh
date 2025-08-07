@@ -1,11 +1,8 @@
-#!/bin/bash
-
-# Exit on error
-set -e
-
-# Install python dependencies
-pip install --upgrade pip
-pip install -r requirements.txt
+#!/usr/bin/env bash
+# This script runs during Render's build process
 
 # Install Playwright browsers
-python -m playwright install --with-deps
+echo "Installing Playwright browsers..."
+playwright install --with-deps
+
+# Proceed with rest of setup (if any)
