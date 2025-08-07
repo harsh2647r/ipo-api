@@ -10,7 +10,9 @@ URL = "https://www.chittorgarh.com/report/ipo-subscription-status-live-bidding-d
 async def fetch_ipo_data():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
-        context = await browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
+        context = await browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+        )
         page = await context.new_page()
         try:
             await page.goto(URL, wait_until="load", timeout=15000)
@@ -42,6 +44,10 @@ async def fetch_ipo_data():
         await browser.close()
         return data
 
+@app.route("/")
+def home():
+    return jsonify({"message": "Welcome to the IPO API. Access /api/ipo for IPO data."})
+
 @app.route("/api/ipo")
 def ipo_api():
     data = asyncio.run(fetch_ipo_data())
@@ -49,3 +55,4 @@ def ipo_api():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
