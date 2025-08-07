@@ -12,7 +12,6 @@ async def get_ipo_data():
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
         await page.goto(IPO_URL, timeout=60000)
-
         await page.wait_for_selector("table.table.table-sm")
 
         tables = await page.query_selector_all("table.table.table-sm")
@@ -52,4 +51,4 @@ def ipo_data():
     })
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
